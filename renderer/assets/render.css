@@ -1,4 +1,96 @@
-html, body {
+* {margin: 0; padding: 0; border: 0; vertical-align: baseline;}
+
+html, body, .titlebar{
     background-color: #F2F4F7;
     font-family: "Roboto-Slab", sans-serif;
 } 
+
+.titlebar {
+    padding: 2px;
+    background-color: #111F4D;
+    color: #F2F4F7;
+    font: 14px "Roboto-Slab", sans-serif;
+    height: calc(100% - 10px);
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+    app-region: drag;
+}
+
+.loading {
+    background-color: #111F4D;
+}
+.logo_div {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    app-region: drag;
+    position: absolute;
+    left: 50%;
+    top: 35%;
+    -webkit-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+}
+
+.logo_div_text {
+    font-family: "Roboto-Slab", sans-serif;
+    font-size: 40px; 
+    padding-top: 30px;
+    color: #E43A19;
+    font-style: oblique;
+    font-weight: bold;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    left: 47%;
+    top: 55%;
+    -webkit-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+
+}
+
+/* The typing effect */
+@keyframes typing {
+    from {
+      width: 0;
+    }
+    to {
+      width: 100%;
+    }
+  }
+
+.meter { 
+    height: 6px;
+    position: relative;
+    background: #111F4D;
+    overflow: hidden;
+}
+
+.meter span {
+    display: block;
+    height: 100%;
+}
+
+.progress {
+    background-color: #E43A19;
+    animation: progressBar 7.5s cubic-bezier(0.215, 0.610, 0.355, 1);
+    animation-fill-mode:both; 
+}
+
+@keyframes progressBar {
+  0% { width: 0; }
+  100% { width: 100%; }
+}
+
+.logo {
+    text-align: center;
+}
+
+.logo_text {
+    text-align: center;;
+}
+
+::-webkit-scrollbar {
+    width: 0px
+}

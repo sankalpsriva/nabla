@@ -1,35 +1,48 @@
-const { setupTitlebar, attachTitlebarToWindow } = require("custom-electron-titlebar/main");
-
 const path = require('path')
-const {app, BrowserWindow} = require('electron'); 
+const {app, BrowserWindow, nativeImage} = require('electron'); 
 const isMac = process.platform === 'darwin';
 const isDev = process.env.NODE_ENV !== 'production';
 
-setupTitlebar(); 
-
 function createMainWindow() {
     const mainWindow = new BrowserWindow({
-        fontSize: 0,
+        show: false,
         width: isDev ? 1000 : 800,
         height: 600,
-        title: 'Physics App',   
+        title: 'Nabla',
         titleBarStyle: 'hidden',
-        titleBarOverlay: true, 
-        webPreferences: {
-            sandbox: false, 
-            preload: path.join(__dirname, 'preload.js'),
-        }
+        ...(process.platform === 'darwin' ? { titleBarOverlay: true } : {}),
+        icon: isMac ? path.join(__dirname, 'icons/nabla/mac/icon.icns') : path.join(__dirname, 'icons/nabla/win/icon.ico'),
     });
+
+    let splash = new BrowserWindow({
+        width: 250, 
+        height: 300,
+        frame: false,
+        alwaysOnTop: true, // remove after development
+        maximizable: false,
+        minimizable: false,
+        icon: isMac ? path.join(__dirname, 'icons/nabla/mac/icon.icns') : path.join(__dirname, 'icons/nabla/win/icon.ico'),
+    });
+
+    splash.loadFile(path.join(__dirname, './renderer/splash.html'));
+    splash.center();
+    splash.show(); 
+
+    setTimeout(() => {
+        splash.close(); 
+        mainWindow.maximize();
+        mainWindow.show();
+    }, 8000)
+
     // Open DevTools if in development mode
-    mainWindow.setMenuBarVisibility(false);
-    if (isDev) { 
-        mainWindow.webContents.openDevTools();
-    }
-
-    attachTitlebarToWindow(mainWindow);
+    // mainWindow.setMenuBarVisibility(false);
+    // if (isDev) { 
+    //     mainWindow.webContents.openDevTools();
+    // }
+    mainWindow.setOverlayIcon(path.join(__dirname, 'icons/nabla/win/icon.ico'), '')
     mainWindow.loadFile(path.join(__dirname, './renderer/index.html'));
-
 }
+
 
 app.whenReady().then(() => {
     createMainWindow(); 
@@ -42,7 +55,5 @@ app.whenReady().then(() => {
 }) 
 
 app.on('window-all-closed', () => {
-    if (isMac) {
-        app.quit();
-    }
+    app.quit();
 }) 
