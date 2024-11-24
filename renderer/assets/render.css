@@ -5,6 +5,15 @@
   vertical-align: baseline;
 }
 
+
+#mrs-saint-delafield-regular {
+  font-family: "Monsieur La Doulaise",  cursive;
+  font-size: 90px;
+  font-weight: 400;
+  font-style: normal;
+  app-region: drag;
+}
+
 html,
 body,
 .titlebar {
@@ -13,34 +22,68 @@ body,
 }
 
 .titlebar {
-  padding: 2px;
+  display: flex;
+  padding: 3px;
   background-color: #111f4d;
   color: #f2f4f7;
-  font: 14px "Roboto-Slab", sans-serif;
   height: calc(100% - 10px);
   width: 100%;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
   app-region: drag;
 }
 
+#window-title {
+  display: flex;
+  align-items: center;
+}
+
+nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.minimize, .maximize, .close {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 15px; /* Set a fixed width */
+  height: 15px; /* Set a fixed height */
+  transition: cubic-bezier(0.55, 0.055, 0.675, 0.19);
+  -webkit-app-region: no-drag;
+}
+
+.minimize:hover, .maximize:hover, .close:hover {
+  opacity: 0.75;
+  color: #e43a19;
+}
+
+.maximize {
+  margin-bottom: 5px;
+}
+
+.close {
+  margin-right: 5px;
+} 
+
 .loading {
   background-color: #111f4d;
 }
-.logo_div {
+
+/* .logo_div {
   display: flex;
   justify-content: center;
   align-items: center;
   app-region: drag;
   position: absolute;
-  left: 50%;
-  top: 35%;
   -webkit-transform: translate(-50%, -50%);
   transform: translate(-50%, -50%);
-}
+} */
 
 .logo_div_text {
-  font-family: "Roboto-Slab", sans-serif;
   font-size: 40px;
   padding-top: 30px;
   color: #e43a19;
@@ -50,8 +93,8 @@ body,
   justify-content: center;
   align-items: center;
   position: absolute;
-  left: 47%;
-  top: 55%;
+  left: 49%;
+  top: 50%;
   -webkit-transform: translate(-50%, -50%);
   transform: translate(-50%, -50%);
 }
@@ -80,7 +123,7 @@ body,
 
 .progress {
   background-color: #e43a19;
-  animation: progressBar 7.5s cubic-bezier(0.215, 0.61, 0.355, 1);
+  animation: progressBar 5s cubic-bezier(0.785, 0.135, 0.15, 0.86);
   animation-fill-mode: both;
 }
 
