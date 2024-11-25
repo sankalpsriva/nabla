@@ -21,11 +21,30 @@ function createMainWindow() {
     },
   });
 
+  let splash = new BrowserWindow({
+    width: 350,
+    height: 350,
+    frame: false,
+    resizable: false,
+    maximizable: false,
+    minimizable: false,
+    icon: isMac
+      ? path.join(__dirname, "icons/nabla/mac/icon.icns")
+      : path.join(__dirname, "icons/nabla/win/icon.ico"),
+  });
+
+  splash.loadFile(path.join(__dirname, "./renderer/splash.html"));
   mainWindow.loadFile(path.join(__dirname, "./renderer/index.html"));
 
-  mainWindow.once("ready-to-show", () => {
+  // mainWindow.once("ready-to-show", () => {
+  //   mainWindow.show();
+  // });
+
+  setTimeout(() => {
+    splash.destroy();
     mainWindow.show();
-  });
+    mainWindow.maximize(); 
+  }, 5000);
 
   ipcMain.on("app/close", () => {
     app.quit();

@@ -5,13 +5,42 @@
   vertical-align: baseline;
 }
 
+@keyframes popIn {
+  from {
+    transform: scale(0);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
 
-#mrs-saint-delafield-regular {
+#mrs-saint-delafield-regular{
   font-family: "Monsieur La Doulaise",  cursive;
   font-size: 90px;
   font-weight: 400;
   font-style: normal;
-  app-region: drag;
+  app-region: no-drag;
+  webkit-user-select: none;
+  -ms-user-select: none; 
+}
+
+.home-text {
+  font-family: "Monsieur La Doulaise", cursive;
+  font-size: 90px;
+  font-weight: 400;
+  font-style: normal;
+  app-region: no-drag;
+  webkit-user-select: none;
+  -ms-user-select: none; 
+  user-select: none; 
+  color: #e43a19;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  animation: popIn 2s cubic-bezier(0.42, 0, 0.58, 1);
 }
 
 html,
@@ -83,7 +112,7 @@ nav {
   transform: translate(-50%, -50%);
 } */
 
-.logo_div_text {
+.logo_div_text{
   font-size: 40px;
   padding-top: 30px;
   color: #e43a19;
@@ -99,14 +128,19 @@ nav {
   transform: translate(-50%, -50%);
 }
 
-/* The typing effect */
-@keyframes typing {
-  from {
-    width: 0;
-  }
-  to {
-    width: 100%;
-  }
+.home-text {
+  font-size: 70px;
+  color: #e43a19;
+  font-style: oblique;
+  font-weight: bold;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  left: 50%;
+  top: 5%;
+  transform: translateX(-50%);
+  animation: popIn 2s cubic-bezier(0.42, 0, 0.58, 1);
 }
 
 .meter {
@@ -125,6 +159,18 @@ nav {
   background-color: #e43a19;
   animation: progressBar 5s cubic-bezier(0.785, 0.135, 0.15, 0.86);
   animation-fill-mode: both;
+}
+
+.home {
+  display: flex;
+  justify-content: left;
+  align-items: left;
+  padding: 15px;
+}
+
+.home-img:hover {
+  cursor: pointer;
+  -webkit-app-region: no-drag;
 }
 
 @keyframes progressBar {
