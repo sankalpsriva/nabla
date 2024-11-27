@@ -1,0 +1,151 @@
+@keyframes popIn {
+  from {
+    transform: scale(0) translate(-50%, -50%);
+    opacity: 0;
+    white-space: nowrap;
+  }
+  to {
+    transform: scale(1) translate(-50%, -50%);
+    opacity: 1;
+    white-space: nowrap;
+  }
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  vertical-align: baseline;
+}
+ 
+html,
+body,
+.titlebar {
+  background-color: #fff8dc;
+  font-family: "Roboto-Slab", sans-serif;
+  overflow-x: hidden;
+}
+
+.titlebar {
+  display: flex;
+  padding: 3px;
+  background-color: #111f4d;
+  color: #f2f4f7;
+  height: calc(100% - 10px);
+  width: 100%;
+  justify-content: space-between;
+  align-items: center;
+  app-region: drag;
+}
+
+#window-title {
+  display: flex;
+  align-items: center;
+}
+
+nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.minimize, .maximize, .close {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 15px; /* Set a fixed width */
+  height: 15px; /* Set a fixed height */
+  transition: cubic-bezier(0.55, 0.055, 0.675, 0.19);
+  -webkit-app-region: no-drag;
+}
+
+.minimize:hover, .maximize:hover, .close:hover {
+  opacity: 0.75;
+  color: #e43a19;
+}
+
+.maximize {
+  margin-bottom: 5px;
+}
+
+.close {
+  margin-right: 5px;
+} 
+
+#logo {
+  padding-bottom: 1px;
+  padding-left: 1px;
+}
+
+.home-text {
+  font-family: "Monsieur La Doulaise", cursive;
+  font-size: 90px;
+  font-weight: 400;
+  font-style: normal;
+  app-region: no-drag;
+  webkit-user-select: none;
+  -ms-user-select: none; 
+  user-select: none; 
+  color: #e43a19;
+  position: absolute;
+  left: 50%;
+  top: 15%;
+  white-space: nowrap;
+  transform: translate(-50%, -50%);
+  animation: popIn 2s cubic-bezier(0.42, 0, 0.58, 1);
+}
+
+.home {
+  display: flex;
+  justify-content: left;
+  align-items: left;
+  padding: 15px;
+}
+
+.home-img:hover {
+  cursor: pointer;
+  -webkit-app-region: no-drag;
+}
+
+::-webkit-scrollbar {
+  width: 0px;
+}
+
+.grid-container {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+  gap: 20px;
+  padding: 20px;
+  margin-top: 75px;
+}
+
+.grid-item {
+  position: relative;
+  width: 100%;
+  padding-top: 100%;
+  background-color: rgba(0, 0, 0, 0.1); /* Optional: Add background color */
+  overflow: hidden;
+}
+
+.grid-image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.5; /* Make the image transparent */
+}
+
+.grid-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: #fff; /* Adjust text color as needed */
+  font-size: 24px; /* Adjust font size as needed */
+  text-align: center;
+}

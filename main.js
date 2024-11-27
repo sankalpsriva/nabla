@@ -8,12 +8,15 @@ function createMainWindow() {
     show: false,
     width: isDev ? 1000 : 800,
     height: 600,
+    minWidth: 770,
+    minHeight: 673,
     title: "Nabla",
     titleBarStyle: "hidden",
     ...(process.platform === "darwin" ? { titleBarOverlay: true } : {}),
     icon: isMac
       ? path.join(__dirname, "icons/nabla/mac/icon.icns")
       : path.join(__dirname, "icons/nabla/win/icon.ico"),
+
     webPreferences: {
       preload: path.join(__dirname, "preload.js"),
       contextIsolation: true,
@@ -28,13 +31,16 @@ function createMainWindow() {
     resizable: false,
     maximizable: false,
     minimizable: false,
+
     icon: isMac
       ? path.join(__dirname, "icons/nabla/mac/icon.icns")
       : path.join(__dirname, "icons/nabla/win/icon.ico"),
   });
 
   splash.loadFile(path.join(__dirname, "./renderer/splash.html"));
-  mainWindow.loadFile(path.join(__dirname, "./renderer/index.html"));
+
+  splash.maximize();
+  // mainWindow.webContents.openDevTools()
 
   // mainWindow.once("ready-to-show", () => {
   //   mainWindow.show();
@@ -42,9 +48,14 @@ function createMainWindow() {
 
   setTimeout(() => {
     splash.destroy();
+    ipcMain.emit("app/splashDestroyed");
+  }, 5500);
+
+  ipcMain.on("app/splashDestroyed", () => {
+    mainWindow.loadFile(path.join(__dirname, "./renderer/index.html"));
     mainWindow.show();
-    mainWindow.maximize(); 
-  }, 5000);
+    mainWindow.maximize();
+  });
 
   ipcMain.on("app/close", () => {
     app.quit();
@@ -59,6 +70,12 @@ function createMainWindow() {
       mainWindow.unmaximize();
     } else {
       mainWindow.maximize();
+    }
+  });
+
+  ipcMain.on("app/goHome", () => {
+    if (BrowserWindow.getFocusedWindow() !== mainWindow) {
+      mainWindow.loadFile(path.join(__dirname, "./renderer/index.html"));
     }
   });
 }

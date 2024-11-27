@@ -9,3 +9,7 @@ document.querySelector(".close").addEventListener("click", () => {
   document.querySelector(".maximize").addEventListener("click", () => {
     window.electron.maximizeWindow();
   });
+
+  document.querySelector(".home-img").addEventListener("click", () => {
+    window.electron.goHome(); 
+  });
