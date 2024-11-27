@@ -11,6 +11,15 @@
   }
 }
 
+@keyframes fadeIn {
+  from {
+    opacity: 0.5;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
 * {
   margin: 0;
   padding: 0;
@@ -27,15 +36,20 @@ body,
 }
 
 .titlebar {
-  display: flex;
-  padding: 3px;
-  background-color: #111f4d;
-  color: #f2f4f7;
-  height: calc(100% - 10px);
+  position: fixed;
+  color: #F2F4F7;
+  top: 0;
+  left: 0;
   width: 100%;
+  height: 20px; 
+  background-color: #111f4d;
+  z-index: 1000; 
+  display: flex;
   justify-content: space-between;
   align-items: center;
-  app-region: drag;
+  padding-left: 3px;
+  padding-bottom: 2px;
+  -webkit-app-region: drag;
 }
 
 #window-title {
@@ -97,11 +111,12 @@ nav {
   animation: popIn 2s cubic-bezier(0.42, 0, 0.58, 1);
 }
 
-.home {
+.home-img {
   display: flex;
   justify-content: left;
   align-items: left;
   padding: 15px;
+  padding-top: 30px;
 }
 
 .home-img:hover {
@@ -119,7 +134,7 @@ nav {
   grid-template-rows: repeat(2, 1fr);
   gap: 20px;
   padding: 20px;
-  margin-top: 75px;
+  margin-top: 200px;
 }
 
 .grid-item {
@@ -132,11 +147,11 @@ nav {
 
 .grid-image {
   position: absolute;
-  top: 0;
+  top: 50%;
   left: 0;
   width: 100%;
-  height: 100%;
   object-fit: cover;
+  transform: translate(0, -50%);
   opacity: 0.5; /* Make the image transparent */
 }
 
@@ -145,7 +160,13 @@ nav {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  color: #fff; /* Adjust text color as needed */
+  color: #e43a19; /* Adjust text color as needed */
   font-size: 24px; /* Adjust font size as needed */
   text-align: center;
+}
+
+.grid-item:hover .grid-image {
+  opacity: 1; 
+  cursor: pointer;
+  animation: fadeIn 0.5s cubic-bezier(0.42, 0, 0.58, 1);
 }

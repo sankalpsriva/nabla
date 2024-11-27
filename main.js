@@ -78,6 +78,26 @@ function createMainWindow() {
       mainWindow.loadFile(path.join(__dirname, "./renderer/index.html"));
     }
   });
+
+  ipcMain.on("app/mech", () => {
+      console.log("mech");
+      mainWindow.loadFile(path.join(__dirname, "./renderer/assets/mech/mech.html"));
+  });
+  
+  ipcMain.on("app/emag", () => {
+      console.log("emag");
+      mainWindow.loadFile(path.join(__dirname, "./renderer/assets/emag/emag.html")); 
+  });
+
+  ipcMain.on("app/vec", () => {
+      console.log("vec");
+      mainWindow.loadFile(path.join(__dirname, "./renderer/assets/vec/vec.html")); 
+  });
+
+  ipcMain.on("app/rel", () => {
+      console.log("rel");
+      mainWindow.loadFile(path.join(__dirname, "./renderer/assets/rel/rel.html")); 
+  });
 }
 
 app.whenReady().then(() => {
