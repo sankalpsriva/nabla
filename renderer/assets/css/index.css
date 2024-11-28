@@ -64,7 +64,7 @@ nav {
   gap: 10px;
 }
 
-.minimize, .maximize, .close {
+.minimize, .maximize, .close, .home-img{
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -75,7 +75,11 @@ nav {
   -webkit-app-region: no-drag;
 }
 
-.minimize:hover, .maximize:hover, .close:hover {
+.home-img {
+  opacity: 0.3;
+}
+
+.minimize:hover, .maximize:hover, .close:hover, .home-img:hover {
   opacity: 0.75;
   color: #e43a19;
 }
@@ -109,19 +113,6 @@ nav {
   white-space: nowrap;
   transform: translate(-50%, -50%);
   animation: popIn 2s cubic-bezier(0.42, 0, 0.58, 1);
-}
-
-.home-img {
-  display: flex;
-  justify-content: left;
-  align-items: left;
-  padding: 15px;
-  padding-top: 30px;
-}
-
-.home-img:hover {
-  cursor: pointer;
-  -webkit-app-region: no-drag;
 }
 
 ::-webkit-scrollbar {

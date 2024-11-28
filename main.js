@@ -24,34 +24,27 @@ function createMainWindow() {
     },
   });
 
-  let splash = new BrowserWindow({
-    width: 350,
-    height: 350,
-    frame: false,
-    resizable: false,
-    maximizable: false,
-    minimizable: false,
-
-    icon: isMac
-      ? path.join(__dirname, "icons/nabla/mac/icon.icns")
-      : path.join(__dirname, "icons/nabla/win/icon.ico"),
-  });
-
-  splash.loadFile(path.join(__dirname, "./renderer/splash.html"));
-
-  splash.maximize();
+  mainWindow.loadFile(path.join(__dirname, "./renderer/splash.html"));
+  mainWindow.maximize(); 
+  // splash.maximize();
   // mainWindow.webContents.openDevTools()
 
   // mainWindow.once("ready-to-show", () => {
   //   mainWindow.show();
   // });
 
+  const homePagePath = `file://${path.join(__dirname, "./renderer/index.html")}`;
+  // const mechPath = path.join(__dirname, "./renderer/assets/mech/mech.html");
+  // const emagPath = path.join(__dirname, "./renderer/assets/emag/emag.html");
+  // const vecPath = path.join(__dirname, "./renderer/assets/vec/vec.html");
+  // const relPath = path.join(__dirname, "./renderer/assets/rel/rel.html");
+
   setTimeout(() => {
-    splash.destroy();
     ipcMain.emit("app/splashDestroyed");
   }, 5500);
 
   ipcMain.on("app/splashDestroyed", () => {
+    
     mainWindow.loadFile(path.join(__dirname, "./renderer/index.html"));
     mainWindow.show();
     mainWindow.maximize();
@@ -74,9 +67,9 @@ function createMainWindow() {
   });
 
   ipcMain.on("app/goHome", () => {
-    if (BrowserWindow.getFocusedWindow() !== mainWindow) {
-      mainWindow.loadFile(path.join(__dirname, "./renderer/index.html"));
-    }
+    console.log(path.join("", mainWindow.webContents.getURL())); 
+    console.log(path.join("", homePath));
+    mainWindow.loadFile(path.join(__dirname, "./renderer/index.html"));
   });
 
   ipcMain.on("app/mech", () => {
