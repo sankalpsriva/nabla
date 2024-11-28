@@ -14,8 +14,8 @@ function createMainWindow() {
     titleBarStyle: "hidden",
     ...(process.platform === "darwin" ? { titleBarOverlay: true } : {}),
     icon: isMac
-      ? path.join(__dirname, "icons/nabla/mac/icon.icns")
-      : path.join(__dirname, "icons/nabla/win/icon.ico"),
+      ? path.join(__dirname, "../../icons/nabla/mac/icon.icns")
+      : path.join(__dirname, "../../icons/nabla/win/icon.ico"),
 
     webPreferences: {
       preload: path.join(__dirname, "preload.js"),
@@ -24,7 +24,7 @@ function createMainWindow() {
     },
   });
 
-  mainWindow.loadFile(path.join(__dirname, "./renderer/splash.html"));
+  mainWindow.loadFile(path.join(__dirname, "../.././renderer/splash.html"));
   mainWindow.maximize(); 
   // splash.maximize();
   // mainWindow.webContents.openDevTools();
@@ -33,7 +33,7 @@ function createMainWindow() {
   //   mainWindow.show();
   // });
 
-  const homePagePath = "file:\\" + path.join(__dirname, "./renderer/index.html");
+  const homePagePath = "file:\\" + path.join(__dirname, "../.././renderer/index.html");
   let indexHTMLLoaded = false;
 
   setTimeout(() => {
@@ -42,7 +42,7 @@ function createMainWindow() {
   }, 5500);
 
   ipcMain.on("app/splashDestroyed", () => {
-    mainWindow.loadFile(path.join(__dirname, "./renderer/index.html"));
+    mainWindow.loadFile(path.join(__dirname, "../.././renderer/index.html"));
     mainWindow.show();
     mainWindow.maximize();
   });
@@ -65,23 +65,23 @@ function createMainWindow() {
 
   ipcMain.on("app/goHome", () => {
     if (path.join("", mainWindow.webContents.getURL()) === homePagePath) return;
-    mainWindow.loadFile(path.join(__dirname, "./renderer/index.html"));
+    mainWindow.loadFile(path.join(__dirname, "../.././renderer/index.html"));
   });
 
   ipcMain.on("app/mech", () => {
-      mainWindow.loadFile(path.join(__dirname, "./renderer/assets/mech/mech.html"));
+      mainWindow.loadFile(path.join(__dirname, "../.././renderer/assets/mech/mech.html"));
   });
   
   ipcMain.on("app/emag", () => {
-      mainWindow.loadFile(path.join(__dirname, "./renderer/assets/emag/emag.html")); 
+      mainWindow.loadFile(path.join(__dirname, "../.././renderer/assets/emag/emag.html")); 
   });
 
   ipcMain.on("app/vec", () => {
-      mainWindow.loadFile(path.join(__dirname, "./renderer/assets/vec/vec.html")); 
+      mainWindow.loadFile(path.join(__dirname, "../.././renderer/assets/vec/vec.html")); 
   });
 
   ipcMain.on("app/rel", () => {
-      mainWindow.loadFile(path.join(__dirname, "./renderer/assets/rel/rel.html")); 
+      mainWindow.loadFile(path.join(__dirname, "../.././renderer/assets/rel/rel.html")); 
   });
 }
 
