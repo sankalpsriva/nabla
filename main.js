@@ -27,24 +27,21 @@ function createMainWindow() {
   mainWindow.loadFile(path.join(__dirname, "./renderer/splash.html"));
   mainWindow.maximize(); 
   // splash.maximize();
-  // mainWindow.webContents.openDevTools()
+  // mainWindow.webContents.openDevTools();
 
   // mainWindow.once("ready-to-show", () => {
   //   mainWindow.show();
   // });
 
-  const homePagePath = `file://${path.join(__dirname, "./renderer/index.html")}`;
-  // const mechPath = path.join(__dirname, "./renderer/assets/mech/mech.html");
-  // const emagPath = path.join(__dirname, "./renderer/assets/emag/emag.html");
-  // const vecPath = path.join(__dirname, "./renderer/assets/vec/vec.html");
-  // const relPath = path.join(__dirname, "./renderer/assets/rel/rel.html");
+  const homePagePath = "file:\\" + path.join(__dirname, "./renderer/index.html");
+  let indexHTMLLoaded = false;
 
   setTimeout(() => {
     ipcMain.emit("app/splashDestroyed");
+    indexHTMLLoaded = true;    
   }, 5500);
 
   ipcMain.on("app/splashDestroyed", () => {
-    
     mainWindow.loadFile(path.join(__dirname, "./renderer/index.html"));
     mainWindow.show();
     mainWindow.maximize();
@@ -67,28 +64,23 @@ function createMainWindow() {
   });
 
   ipcMain.on("app/goHome", () => {
-    console.log(path.join("", mainWindow.webContents.getURL())); 
-    console.log(path.join("", homePath));
+    if (path.join("", mainWindow.webContents.getURL()) === homePagePath) return;
     mainWindow.loadFile(path.join(__dirname, "./renderer/index.html"));
   });
 
   ipcMain.on("app/mech", () => {
-      console.log("mech");
       mainWindow.loadFile(path.join(__dirname, "./renderer/assets/mech/mech.html"));
   });
   
   ipcMain.on("app/emag", () => {
-      console.log("emag");
       mainWindow.loadFile(path.join(__dirname, "./renderer/assets/emag/emag.html")); 
   });
 
   ipcMain.on("app/vec", () => {
-      console.log("vec");
       mainWindow.loadFile(path.join(__dirname, "./renderer/assets/vec/vec.html")); 
   });
 
   ipcMain.on("app/rel", () => {
-      console.log("rel");
       mainWindow.loadFile(path.join(__dirname, "./renderer/assets/rel/rel.html")); 
   });
 }

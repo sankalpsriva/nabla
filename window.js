@@ -29,4 +29,3 @@ document.querySelector(".close").addEventListener("click", () => {
   document.querySelector("#rel").addEventListener("click", () => {
     window.electron.rel(); 
   });
-  

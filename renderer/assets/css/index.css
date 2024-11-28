@@ -11,14 +11,27 @@
   }
 }
 
-@keyframes fadeIn {
-  from {
-    opacity: 0.5;
+@keyframes bumpLeft {
+  0% {
+    margin-left: 0;
   }
-  to {
-    opacity: 1;
+  50% {
+    margin-left: -20px;
+  }
+  100% {
+    margin-left: -100px;
   }
 }
+
+@keyframes slidein {
+  0% {
+    margin-left: -800px;
+  }
+  100% {
+    margin-left: -600px;
+  }
+}
+
 
 * {
   margin: 0;
@@ -26,7 +39,7 @@
   border: 0;
   vertical-align: baseline;
 }
- 
+
 html,
 body,
 .titlebar {
@@ -37,13 +50,13 @@ body,
 
 .titlebar {
   position: fixed;
-  color: #F2F4F7;
+  color: #f2f4f7;
   top: 0;
   left: 0;
   width: 100%;
-  height: 20px; 
+  height: 20px;
   background-color: #111f4d;
-  z-index: 1000; 
+  z-index: 1000;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -64,13 +77,16 @@ nav {
   gap: 10px;
 }
 
-.minimize, .maximize, .close, .home-img{
+.minimize,
+.maximize,
+.close,
+.home-img {
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 15px; /* Set a fixed width */
-  height: 15px; /* Set a fixed height */
+  width: 15px; 
+  height: 15px;
   transition: cubic-bezier(0.55, 0.055, 0.675, 0.19);
   -webkit-app-region: no-drag;
 }
@@ -79,7 +95,10 @@ nav {
   opacity: 0.3;
 }
 
-.minimize:hover, .maximize:hover, .close:hover, .home-img:hover {
+.minimize:hover,
+.maximize:hover,
+.close:hover,
+.home-img:hover {
   opacity: 0.75;
   color: #e43a19;
 }
@@ -90,7 +109,7 @@ nav {
 
 .close {
   margin-right: 5px;
-} 
+}
 
 #logo {
   padding-bottom: 1px;
@@ -104,15 +123,15 @@ nav {
   font-style: normal;
   app-region: no-drag;
   webkit-user-select: none;
-  -ms-user-select: none; 
-  user-select: none; 
+  -ms-user-select: none;
+  user-select: none;
   color: #e43a19;
   position: absolute;
   left: 50%;
   top: 15%;
   white-space: nowrap;
   transform: translate(-50%, -50%);
-  animation: popIn 2s cubic-bezier(0.42, 0, 0.58, 1);
+  /* animation: popIn 2s cubic-bezier(0.42, 0, 0.58, 1); */
 }
 
 ::-webkit-scrollbar {
@@ -132,7 +151,6 @@ nav {
   position: relative;
   width: 100%;
   padding-top: 100%;
-  background-color: rgba(0, 0, 0, 0.1); /* Optional: Add background color */
   overflow: hidden;
 }
 
@@ -154,10 +172,31 @@ nav {
   color: #e43a19; /* Adjust text color as needed */
   font-size: 24px; /* Adjust font size as needed */
   text-align: center;
+  text-wrap: nowrap;
+  font-style: italic;
 }
 
 .grid-item:hover .grid-image {
-  opacity: 1; 
+  opacity: 1;
   cursor: pointer;
-  animation: fadeIn 0.5s cubic-bezier(0.42, 0, 0.58, 1);
+  animation: fadeIn 0.25s cubic-bezier(0.42, 0, 0.58, 1);
+}
+
+.home-text {
+  text-wrap: nowrap;
+  display: inline-block;
+  /* animation: bumpLeft 7s 1; */
+}
+
+.nabla-div {
+  text-wrap: nowrap;
+  display: inline-block;
+  width: 0px;
+  /* animation: bumpLeft 7s 1; */
+}
+
+.nabla-div span {
+  text-wrap: nowrap;
+  /* margin-left: -355px; */
+  animation: slidein 7s 1;
 }
