@@ -8,6 +8,16 @@
       rel="stylesheet"
     />
     <link rel="stylesheet" href="../css/index.css" />
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>
+      window.MathJax = {
+        tex: {
+          inlineMath: [['$', '$'], ['\\(', '\\)']],
+          displayMath: [['$$', '$$'], ['\\[', '\\]']]
+        }
+      };
+    </script>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Nabla</title>
@@ -32,5 +42,299 @@
       </nav>
       <script src="../../../src/js/window.js" defer type="module"></script>
     </div>
+
+    <div class="topic-header">
+      <h1>Classical Mechanics</h1>
+      <p>Choose a calculator below to explore mechanical systems</p>
+    </div>
+
+    <div class="calculator-selection">
+      <button class="calculator-btn" onclick="showCalculator('kinematics')">Kinematics</button>
+      <button class="calculator-btn" onclick="showCalculator('projectile-motion')">Projectile Motion</button>
+      <button class="calculator-btn" onclick="showCalculator('circular-motion')">Circular Motion</button>
+    </div>
+
+    <!-- Kinematics Calculator -->
+    <div class="calculator-container" id="kinematics-calc" style="display: none;">
+      <h2>Kinematics Calculator</h2>
+      <div class="calculator-form">
+        <div class="input-group">
+          <label for="initial-velocity">Initial Velocity (v₀) [m/s]:</label>
+          <input type="number" id="initial-velocity" placeholder="Enter initial velocity" step="any">
+        </div>
+        <div class="input-group">
+          <label for="final-velocity">Final Velocity (v) [m/s]:</label>
+          <input type="number" id="final-velocity" placeholder="Enter final velocity" step="any">
+        </div>
+        <div class="input-group">
+          <label for="acceleration">Acceleration (a) [m/s²]:</label>
+          <input type="number" id="acceleration" placeholder="Enter acceleration" step="any">
+        </div>
+        <div class="input-group">
+          <label for="time">Time (t) [s]:</label>
+          <input type="number" id="time" placeholder="Enter time" step="any">
+        </div>
+        <div class="input-group">
+          <label for="displacement">Displacement (s) [m]:</label>
+          <input type="number" id="displacement" placeholder="Enter displacement" step="any">
+        </div>
+        <p><em>Leave at least two fields empty to solve for them</em></p>
+        <button onclick="calculateKinematics()">Calculate</button>
+        <div class="result" id="kinematics-result"></div>
+      </div>
+    </div>
+
+    <!-- Projectile Motion Calculator -->
+    <div class="calculator-container" id="projectile-motion-calc" style="display: none;">
+      <h2>Projectile Motion Calculator</h2>
+      <div class="calculator-form">
+        <div class="input-group">
+          <label for="initial-velocity-proj">Initial Velocity (v₀) [m/s]:</label>
+          <input type="number" id="initial-velocity-proj" placeholder="Enter initial velocity" step="any">
+        </div>
+        <div class="input-group">
+          <label for="launch-angle">Launch Angle (θ) [degrees]:</label>
+          <input type="number" id="launch-angle" placeholder="Enter launch angle" step="any">
+        </div>
+        <div class="input-group">
+          <label for="initial-height">Initial Height (h₀) [m]:</label>
+          <input type="number" id="initial-height" placeholder="Enter initial height (default: 0)" step="any" value="0">
+        </div>
+        <button onclick="calculateProjectileMotion()">Calculate</button>
+        <div class="result" id="projectile-motion-result"></div>
+      </div>
+    </div>
+
+    <!-- Circular Motion Calculator -->
+    <div class="calculator-container" id="circular-motion-calc" style="display: none;">
+      <h2>Circular Motion Calculator</h2>
+      <div class="calculator-form">
+        <div class="input-group">
+          <label for="radius">Radius (r) [m]:</label>
+          <input type="number" id="radius" placeholder="Enter radius" step="any">
+        </div>
+        <div class="input-group">
+          <label for="velocity-circular">Velocity (v) [m/s]:</label>
+          <input type="number" id="velocity-circular" placeholder="Enter velocity" step="any">
+        </div>
+        <div class="input-group">
+          <label for="mass">Mass (m) [kg]:</label>
+          <input type="number" id="mass" placeholder="Enter mass" step="any">
+        </div>
+        <div class="input-group">
+          <label for="centripetal-force">Centripetal Force (Fc) [N]:</label>
+          <input type="number" id="centripetal-force" placeholder="Enter centripetal force" step="any">
+        </div>
+        <p><em>Leave one field empty to solve for it</em></p>
+        <button onclick="calculateCircularMotion()">Calculate</button>
+        <div class="result" id="circular-motion-result"></div>
+      </div>
+    </div>
+
+    <script>
+      function showCalculator(calcType) {
+        // Hide all calculators
+        document.querySelectorAll('.calculator-container').forEach(calc => {
+          calc.style.display = 'none';
+        });
+        
+        // Show selected calculator
+        document.getElementById(calcType + '-calc').style.display = 'block';
+        
+        // Update button styles
+        document.querySelectorAll('.calculator-btn').forEach(btn => {
+          btn.classList.remove('active');
+        });
+        event.target.classList.add('active');
+      }
+
+      function calculateKinematics() {
+        const v0 = parseFloat(document.getElementById('initial-velocity').value) || null;
+        const v = parseFloat(document.getElementById('final-velocity').value) || null;
+        const a = parseFloat(document.getElementById('acceleration').value) || null;
+        const t = parseFloat(document.getElementById('time').value) || null;
+        const s = parseFloat(document.getElementById('displacement').value) || null;
+        
+        // Count non-null values
+        const values = [v0, v, a, t, s];
+        const nonNullCount = values.filter(val => val !== null).length;
+        
+        if (nonNullCount < 3) {
+          document.getElementById('kinematics-result').innerHTML = 'Please enter at least 3 values to solve for others.';
+          return;
+        }
+        
+        let initialVelocity = v0, finalVelocity = v, acceleration = a, time = t, displacement = s;
+        let solvedFor = [];
+        
+        // Try different kinematic equations based on available values
+        try {
+          // v = v0 + at
+          if (v === null && v0 !== null && a !== null && t !== null) {
+            finalVelocity = v0 + a * t;
+            solvedFor.push('Final Velocity');
+          } else if (v0 === null && v !== null && a !== null && t !== null) {
+            initialVelocity = v - a * t;
+            solvedFor.push('Initial Velocity');
+          } else if (a === null && v0 !== null && v !== null && t !== null) {
+            acceleration = (v - v0) / t;
+            solvedFor.push('Acceleration');
+          } else if (t === null && v0 !== null && v !== null && a !== null) {
+            time = (v - v0) / a;
+            solvedFor.push('Time');
+          }
+          
+          // s = v0*t + 0.5*a*t^2
+          if (s === null && v0 !== null && a !== null && t !== null) {
+            displacement = v0 * t + 0.5 * a * t * t;
+            solvedFor.push('Displacement');
+          } else if (v0 === null && s !== null && a !== null && t !== null) {
+            initialVelocity = (s - 0.5 * a * t * t) / t;
+            solvedFor.push('Initial Velocity');
+          } else if (a === null && v0 !== null && s !== null && t !== null) {
+            acceleration = 2 * (s - v0 * t) / (t * t);
+            solvedFor.push('Acceleration');
+          }
+          
+          // v^2 = v0^2 + 2*a*s
+          if (v === null && v0 !== null && a !== null && s !== null) {
+            const vSquared = v0*v0 + 2*a*s;
+            if (vSquared >= 0) {
+              finalVelocity = Math.sqrt(vSquared);
+              solvedFor.push('Final Velocity');
+            }
+          } else if (v0 === null && v !== null && a !== null && s !== null) {
+            const v0Squared = v*v - 2*a*s;
+            if (v0Squared >= 0) {
+              initialVelocity = Math.sqrt(v0Squared);
+              solvedFor.push('Initial Velocity');
+            }
+          } else if (a === null && v0 !== null && v !== null && s !== null) {
+            acceleration = (v*v - v0*v0) / (2*s);
+            solvedFor.push('Acceleration');
+          } else if (s === null && v0 !== null && v !== null && a !== null) {
+            displacement = (v*v - v0*v0) / (2*a);
+            solvedFor.push('Displacement');
+          }
+          
+          // s = (v0 + v)*t/2
+          if (s === null && v0 !== null && v !== null && t !== null) {
+            displacement = (v0 + v) * t / 2;
+            if (!solvedFor.includes('Displacement')) solvedFor.push('Displacement');
+          } else if (t === null && v0 !== null && v !== null && s !== null) {
+            time = 2 * s / (v0 + v);
+            if (!solvedFor.includes('Time')) solvedFor.push('Time');
+          }
+          
+          document.getElementById('kinematics-result').innerHTML = `
+            <h3>Results ${solvedFor.length > 0 ? '(Solved for ' + solvedFor.join(', ') + ')' : ''}:</h3>
+            <p>Initial Velocity (v₀): ${initialVelocity !== null ? initialVelocity.toFixed(3) : 'N/A'} m/s</p>
+            <p>Final Velocity (v): ${finalVelocity !== null ? finalVelocity.toFixed(3) : 'N/A'} m/s</p>
+            <p>Acceleration (a): ${acceleration !== null ? acceleration.toFixed(3) : 'N/A'} m/s²</p>
+            <p>Time (t): ${time !== null ? time.toFixed(3) : 'N/A'} s</p>
+            <p>Displacement (s): ${displacement !== null ? displacement.toFixed(3) : 'N/A'} m</p>
+            <p>Formulas: $v = v_0 + at$, $s = v_0 t + \\frac{1}{2}at^2$, $v^2 = v_0^2 + 2as$</p>
+          `;
+          MathJax.typesetPromise();
+        } catch (error) {
+          document.getElementById('kinematics-result').innerHTML = 'Unable to solve with given values. Please check your inputs.';
+        }
+      }
+
+      function calculateProjectileMotion() {
+        const v0 = parseFloat(document.getElementById('initial-velocity-proj').value);
+        const angle = parseFloat(document.getElementById('launch-angle').value);
+        const h0 = parseFloat(document.getElementById('initial-height').value) || 0;
+        
+        if (isNaN(v0) || isNaN(angle) || v0 <= 0) {
+          document.getElementById('projectile-motion-result').innerHTML = 'Please enter valid values.';
+          return;
+        }
+        
+        const g = 9.81; // acceleration due to gravity
+        const angleRad = angle * Math.PI / 180;
+        const v0x = v0 * Math.cos(angleRad);
+        const v0y = v0 * Math.sin(angleRad);
+        
+        const timeToMaxHeight = v0y / g;
+        const maxHeight = h0 + (v0y * v0y) / (2 * g);
+        const totalTime = (v0y + Math.sqrt(v0y * v0y + 2 * g * h0)) / g;
+        const range = v0x * totalTime;
+        
+        document.getElementById('projectile-motion-result').innerHTML = `
+          <h3>Results:</h3>
+          <p>Time to Max Height: ${timeToMaxHeight.toFixed(2)} s</p>
+          <p>Maximum Height: ${maxHeight.toFixed(2)} m</p>
+          <p>Total Flight Time: ${totalTime.toFixed(2)} s</p>
+          <p>Range: ${range.toFixed(2)} m</p>
+          <p>Initial Velocity Components: $v_x = ${v0x.toFixed(2)}$ m/s, $v_y = ${v0y.toFixed(2)}$ m/s</p>
+          <p>Key formulas: $t_{max} = \\frac{v_{0y}}{g}$, $h_{max} = h_0 + \\frac{v_{0y}^2}{2g}$, $R = v_{0x} t_{total}$</p>
+        `;
+        MathJax.typesetPromise();
+      }
+
+      function calculateCircularMotion() {
+        const r = parseFloat(document.getElementById('radius').value) || null;
+        const v = parseFloat(document.getElementById('velocity-circular').value) || null;
+        const m = parseFloat(document.getElementById('mass').value) || null;
+        const Fc = parseFloat(document.getElementById('centripetal-force').value) || null;
+        
+        // Count non-null values
+        const nonNullCount = [r, v, m, Fc].filter(val => val !== null && val > 0).length;
+        
+        if (nonNullCount < 3) {
+          document.getElementById('circular-motion-result').innerHTML = 'Please enter at least 3 values to solve for the fourth.';
+          return;
+        }
+        
+        if (nonNullCount === 4) {
+          document.getElementById('circular-motion-result').innerHTML = 'Please leave one field empty to solve for it.';
+          return;
+        }
+        
+        let radius = r, velocity = v, mass = m, centripetalForce = Fc;
+        let solvedFor = '';
+        
+        // Case 1: Solve for radius (r)
+        if (r === null && v !== null && m !== null && Fc !== null) {
+          radius = m * v * v / Fc;
+          solvedFor = 'Radius';
+        }
+        // Case 2: Solve for velocity (v)
+        else if (v === null && r !== null && m !== null && Fc !== null) {
+          velocity = Math.sqrt(Fc * r / m);
+          solvedFor = 'Velocity';
+        }
+        // Case 3: Solve for mass (m)
+        else if (m === null && r !== null && v !== null && Fc !== null) {
+          mass = Fc * r / (v * v);
+          solvedFor = 'Mass';
+        }
+        // Case 4: Solve for centripetal force (Fc)
+        else if (Fc === null && r !== null && v !== null && m !== null) {
+          centripetalForce = m * v * v / r;
+          solvedFor = 'Centripetal Force';
+        }
+        
+        const centripetal_acceleration = velocity * velocity / radius;
+        const angular_velocity = velocity / radius;
+        const period = 2 * Math.PI * radius / velocity;
+        const frequency = 1 / period;
+        
+        document.getElementById('circular-motion-result').innerHTML = `
+          <h3>Results (Solved for ${solvedFor}):</h3>
+          <p>Radius (r): ${radius.toFixed(3)} m</p>
+          <p>Velocity (v): ${velocity.toFixed(3)} m/s</p>
+          <p>Mass (m): ${mass.toFixed(3)} kg</p>
+          <p>Centripetal Force (Fc): ${centripetalForce.toFixed(3)} N</p>
+          <p>Centripetal Acceleration (ac): ${centripetal_acceleration.toFixed(3)} m/s²</p>
+          <p>Angular Velocity (ω): ${angular_velocity.toFixed(3)} rad/s</p>
+          <p>Period (T): ${period.toFixed(3)} s</p>
+          <p>Frequency (f): ${frequency.toFixed(3)} Hz</p>
+          <p>Formulas: $F_c = \\frac{mv^2}{r}$, $a_c = \\frac{v^2}{r}$, $\\omega = \\frac{v}{r}$, $T = \\frac{2\\pi r}{v}$</p>
+        `;
+        MathJax.typesetPromise();
+      }
+    </script>
   </body>
 </html>

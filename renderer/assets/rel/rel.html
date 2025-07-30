@@ -8,6 +8,16 @@
       rel="stylesheet"
     />
     <link rel="stylesheet" href="../css/index.css" />
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>
+      window.MathJax = {
+        tex: {
+          inlineMath: [['$', '$'], ['\\(', '\\)']],
+          displayMath: [['$$', '$$'], ['\\[', '\\]']]
+        }
+      };
+    </script>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Nabla</title>
@@ -32,5 +42,362 @@
       </nav>
       <script src="../../../src/js/window.js" defer type="module"></script>
     </div>
+
+    <div class="topic-header">
+      <h1>Special Relativity</h1>
+      <p>Choose a calculator below to explore relativistic effects</p>
+    </div>
+
+    <div class="calculator-selection">
+      <button class="calculator-btn" onclick="showCalculator('time-dilation')">Time Dilation</button>
+      <button class="calculator-btn" onclick="showCalculator('length-contraction')">Length Contraction</button>
+      <button class="calculator-btn" onclick="showCalculator('relativistic-energy')">Relativistic Energy</button>
+    </div>
+
+    <!-- Time Dilation Calculator -->
+    <div class="calculator-container" id="time-dilation-calc" style="display: none;">
+      <h2>Time Dilation Calculator</h2>
+      <div class="calculator-form">
+        <div class="input-group">
+          <label for="proper-time">Proper Time (t₀) [s]:</label>
+          <input type="number" id="proper-time" placeholder="Enter proper time" step="any">
+        </div>
+        <div class="input-group">
+          <label for="dilated-time">Dilated Time (t) [s]:</label>
+          <input type="number" id="dilated-time" placeholder="Enter dilated time" step="any">
+        </div>
+        <div class="input-group">
+          <label for="velocity">Velocity (v) [m/s]:</label>
+          <input type="number" id="velocity" placeholder="Enter velocity" step="any">
+        </div>
+        <div class="input-group">
+          <label for="velocity-fraction">Or velocity as fraction of c:</label>
+          <input type="number" id="velocity-fraction" placeholder="e.g., 0.9 for 0.9c" step="any" max="0.999">
+        </div>
+        <p><em>Leave one field empty to solve for it</em></p>
+        <button onclick="calculateTimeDilation()">Calculate</button>
+        <div class="result" id="time-dilation-result"></div>
+      </div>
+    </div>
+
+    <!-- Length Contraction Calculator -->
+    <div class="calculator-container" id="length-contraction-calc" style="display: none;">
+      <h2>Length Contraction Calculator</h2>
+      <div class="calculator-form">
+        <div class="input-group">
+          <label for="proper-length">Proper Length (L₀) [m]:</label>
+          <input type="number" id="proper-length" placeholder="Enter proper length" step="any">
+        </div>
+        <div class="input-group">
+          <label for="contracted-length">Contracted Length (L) [m]:</label>
+          <input type="number" id="contracted-length" placeholder="Enter contracted length" step="any">
+        </div>
+        <div class="input-group">
+          <label for="velocity-lc">Velocity (v) [m/s]:</label>
+          <input type="number" id="velocity-lc" placeholder="Enter velocity" step="any">
+        </div>
+        <div class="input-group">
+          <label for="velocity-fraction-lc">Or velocity as fraction of c:</label>
+          <input type="number" id="velocity-fraction-lc" placeholder="e.g., 0.9 for 0.9c" step="any" max="0.999">
+        </div>
+        <p><em>Leave one field empty to solve for it</em></p>
+        <button onclick="calculateLengthContraction()">Calculate</button>
+        <div class="result" id="length-contraction-result"></div>
+      </div>
+    </div>
+
+    <!-- Relativistic Energy Calculator -->
+    <div class="calculator-container" id="relativistic-energy-calc" style="display: none;">
+      <h2>Relativistic Energy Calculator</h2>
+      <div class="calculator-form">
+        <div class="input-group">
+          <label for="rest-mass">Rest Mass (m₀) [kg]:</label>
+          <input type="number" id="rest-mass" placeholder="Enter rest mass" step="any">
+        </div>
+        <div class="input-group">
+          <label for="total-energy">Total Energy (E) [J]:</label>
+          <input type="number" id="total-energy" placeholder="Enter total energy" step="any">
+        </div>
+        <div class="input-group">
+          <label for="velocity-re">Velocity (v) [m/s]:</label>
+          <input type="number" id="velocity-re" placeholder="Enter velocity" step="any">
+        </div>
+        <div class="input-group">
+          <label for="velocity-fraction-re">Or velocity as fraction of c:</label>
+          <input type="number" id="velocity-fraction-re" placeholder="e.g., 0.9 for 0.9c" step="any" max="0.999">
+        </div>
+        <p><em>Leave one field empty to solve for it</em></p>
+        <button onclick="calculateRelativisticEnergy()">Calculate</button>
+        <div class="result" id="relativistic-energy-result"></div>
+      </div>
+    </div>
+
+    <script>
+      function showCalculator(calcType) {
+        // Hide all calculators
+        document.querySelectorAll('.calculator-container').forEach(calc => {
+          calc.style.display = 'none';
+        });
+        
+        // Show selected calculator
+        document.getElementById(calcType + '-calc').style.display = 'block';
+        
+        // Update button styles
+        document.querySelectorAll('.calculator-btn').forEach(btn => {
+          btn.classList.remove('active');
+        });
+        event.target.classList.add('active');
+      }
+
+      function calculateTimeDilation() {
+        const t0 = parseFloat(document.getElementById('proper-time').value) || null;
+        let v = parseFloat(document.getElementById('velocity').value) || null;
+        const vFraction = parseFloat(document.getElementById('velocity-fraction').value) || null;
+        const t = parseFloat(document.getElementById('dilated-time').value) || null;
+        
+        const c = 299792458; // Speed of light in m/s
+        
+        // Convert velocity fraction to velocity if provided
+        if (vFraction !== null && vFraction >= 0 && vFraction < 1) {
+          v = vFraction * c;
+        }
+        
+        // Count non-null values
+        const nonNullCount = [t0, v, t].filter(val => val !== null && val > 0).length;
+        
+        if (nonNullCount < 2) {
+          document.getElementById('time-dilation-result').innerHTML = 'Please enter at least 2 values to solve for the third.';
+          return;
+        }
+        
+        if (nonNullCount === 3) {
+          document.getElementById('time-dilation-result').innerHTML = 'Please leave one field empty to solve for it.';
+          return;
+        }
+        
+        let beta, gamma, dilatedTime, properTime, velocity;
+        let solvedFor = '';
+        
+        // Case 1: Solve for dilated time (t)
+        if (t === null && t0 !== null && v !== null) {
+          if (v >= c) {
+            document.getElementById('time-dilation-result').innerHTML = 'Velocity must be less than the speed of light!';
+            return;
+          }
+          properTime = t0;
+          velocity = v;
+          beta = v / c;
+          gamma = 1 / Math.sqrt(1 - beta * beta);
+          dilatedTime = gamma * t0;
+          solvedFor = 'Dilated Time';
+        }
+        // Case 2: Solve for proper time (t₀)
+        else if (t0 === null && t !== null && v !== null) {
+          if (v >= c) {
+            document.getElementById('time-dilation-result').innerHTML = 'Velocity must be less than the speed of light!';
+            return;
+          }
+          dilatedTime = t;
+          velocity = v;
+          beta = v / c;
+          gamma = 1 / Math.sqrt(1 - beta * beta);
+          properTime = t / gamma;
+          solvedFor = 'Proper Time';
+        }
+        // Case 3: Solve for velocity (v)
+        else if (v === null && t0 !== null && t !== null) {
+          properTime = t0;
+          dilatedTime = t;
+          if (t < t0) {
+            document.getElementById('time-dilation-result').innerHTML = 'Dilated time must be greater than proper time!';
+            return;
+          }
+          gamma = t / t0;
+          beta = Math.sqrt(1 - 1/(gamma * gamma));
+          velocity = beta * c;
+          solvedFor = 'Velocity';
+        }
+        
+        document.getElementById('time-dilation-result').innerHTML = `
+          <h3>Results (Solved for ${solvedFor}):</h3>
+          <p>Proper Time (t₀): ${properTime.toFixed(6)} s</p>
+          <p>Dilated Time (t): ${dilatedTime.toFixed(6)} s</p>
+          <p>Velocity (v): ${velocity.toFixed(2)} m/s (${(velocity/c).toFixed(6)}c)</p>
+          <p>Lorentz Factor (γ): ${gamma.toFixed(6)}</p>
+          <p>Time Dilation Factor: ${(dilatedTime/properTime).toFixed(6)}x</p>
+          <p>Formula used: $t = \\gamma t_0$, where $\\gamma = \\frac{1}{\\sqrt{1 - \\frac{v^2}{c^2}}}$</p>
+        `;
+        MathJax.typesetPromise();
+      }
+
+      function calculateLengthContraction() {
+        const L0 = parseFloat(document.getElementById('proper-length').value) || null;
+        let v = parseFloat(document.getElementById('velocity-lc').value) || null;
+        const vFraction = parseFloat(document.getElementById('velocity-fraction-lc').value) || null;
+        const L = parseFloat(document.getElementById('contracted-length').value) || null;
+        
+        const c = 299792458; // Speed of light in m/s
+        
+        // Convert velocity fraction to velocity if provided
+        if (vFraction !== null && vFraction >= 0 && vFraction < 1) {
+          v = vFraction * c;
+        }
+        
+        // Count non-null values
+        const nonNullCount = [L0, v, L].filter(val => val !== null && val > 0).length;
+        
+        if (nonNullCount < 2) {
+          document.getElementById('length-contraction-result').innerHTML = 'Please enter at least 2 values to solve for the third.';
+          return;
+        }
+        
+        if (nonNullCount === 3) {
+          document.getElementById('length-contraction-result').innerHTML = 'Please leave one field empty to solve for it.';
+          return;
+        }
+        
+        let beta, gamma, contractedLength, properLength, velocity;
+        let solvedFor = '';
+        
+        // Case 1: Solve for contracted length (L)
+        if (L === null && L0 !== null && v !== null) {
+          if (v >= c) {
+            document.getElementById('length-contraction-result').innerHTML = 'Velocity must be less than the speed of light!';
+            return;
+          }
+          properLength = L0;
+          velocity = v;
+          beta = v / c;
+          gamma = 1 / Math.sqrt(1 - beta * beta);
+          contractedLength = L0 / gamma;
+          solvedFor = 'Contracted Length';
+        }
+        // Case 2: Solve for proper length (L₀)
+        else if (L0 === null && L !== null && v !== null) {
+          if (v >= c) {
+            document.getElementById('length-contraction-result').innerHTML = 'Velocity must be less than the speed of light!';
+            return;
+          }
+          contractedLength = L;
+          velocity = v;
+          beta = v / c;
+          gamma = 1 / Math.sqrt(1 - beta * beta);
+          properLength = L * gamma;
+          solvedFor = 'Proper Length';
+        }
+        // Case 3: Solve for velocity (v)
+        else if (v === null && L0 !== null && L !== null) {
+          properLength = L0;
+          contractedLength = L;
+          if (L > L0) {
+            document.getElementById('length-contraction-result').innerHTML = 'Contracted length must be less than proper length!';
+            return;
+          }
+          gamma = L0 / L;
+          beta = Math.sqrt(1 - 1/(gamma * gamma));
+          velocity = beta * c;
+          solvedFor = 'Velocity';
+        }
+        
+        document.getElementById('length-contraction-result').innerHTML = `
+          <h3>Results (Solved for ${solvedFor}):</h3>
+          <p>Proper Length (L₀): ${properLength.toFixed(6)} m</p>
+          <p>Contracted Length (L): ${contractedLength.toFixed(6)} m</p>
+          <p>Velocity (v): ${velocity.toFixed(2)} m/s (${(velocity/c).toFixed(6)}c)</p>
+          <p>Lorentz Factor (γ): ${gamma.toFixed(6)}</p>
+          <p>Contraction Factor: ${(contractedLength/properLength).toFixed(6)}x</p>
+          <p>Formula used: $L = \\frac{L_0}{\\gamma}$, where $\\gamma = \\frac{1}{\\sqrt{1 - \\frac{v^2}{c^2}}}$</p>
+        `;
+        MathJax.typesetPromise();
+      }
+
+      function calculateRelativisticEnergy() {
+        const m0 = parseFloat(document.getElementById('rest-mass').value) || null;
+        let v = parseFloat(document.getElementById('velocity-re').value) || null;
+        const vFraction = parseFloat(document.getElementById('velocity-fraction-re').value) || null;
+        const E = parseFloat(document.getElementById('total-energy').value) || null;
+        
+        const c = 299792458; // Speed of light in m/s
+        
+        // Convert velocity fraction to velocity if provided
+        if (vFraction !== null && vFraction >= 0 && vFraction < 1) {
+          v = vFraction * c;
+        }
+        
+        // Count non-null values
+        const nonNullCount = [m0, v, E].filter(val => val !== null && val > 0).length;
+        
+        if (nonNullCount < 2) {
+          document.getElementById('relativistic-energy-result').innerHTML = 'Please enter at least 2 values to solve for the third.';
+          return;
+        }
+        
+        if (nonNullCount === 3) {
+          document.getElementById('relativistic-energy-result').innerHTML = 'Please leave one field empty to solve for it.';
+          return;
+        }
+        
+        let beta, gamma, totalEnergy, restMass, velocity, restEnergy, kineticEnergy;
+        let solvedFor = '';
+        
+        // Case 1: Solve for total energy (E)
+        if (E === null && m0 !== null && v !== null) {
+          if (v >= c) {
+            document.getElementById('relativistic-energy-result').innerHTML = 'Velocity must be less than the speed of light!';
+            return;
+          }
+          restMass = m0;
+          velocity = v;
+          beta = v / c;
+          gamma = 1 / Math.sqrt(1 - beta * beta);
+          restEnergy = m0 * c * c;
+          totalEnergy = gamma * restEnergy;
+          kineticEnergy = totalEnergy - restEnergy;
+          solvedFor = 'Total Energy';
+        }
+        // Case 2: Solve for rest mass (m₀)
+        else if (m0 === null && E !== null && v !== null) {
+          if (v >= c) {
+            document.getElementById('relativistic-energy-result').innerHTML = 'Velocity must be less than the speed of light!';
+            return;
+          }
+          totalEnergy = E;
+          velocity = v;
+          beta = v / c;
+          gamma = 1 / Math.sqrt(1 - beta * beta);
+          restEnergy = E / gamma;
+          restMass = restEnergy / (c * c);
+          kineticEnergy = totalEnergy - restEnergy;
+          solvedFor = 'Rest Mass';
+        }
+        // Case 3: Solve for velocity (v)
+        else if (v === null && m0 !== null && E !== null) {
+          restMass = m0;
+          totalEnergy = E;
+          restEnergy = m0 * c * c;
+          if (E < restEnergy) {
+            document.getElementById('relativistic-energy-result').innerHTML = 'Total energy must be greater than rest energy!';
+            return;
+          }
+          gamma = E / restEnergy;
+          beta = Math.sqrt(1 - 1/(gamma * gamma));
+          velocity = beta * c;
+          kineticEnergy = totalEnergy - restEnergy;
+          solvedFor = 'Velocity';
+        }
+        
+        document.getElementById('relativistic-energy-result').innerHTML = `
+          <h3>Results (Solved for ${solvedFor}):</h3>
+          <p>Rest Mass (m₀): ${restMass.toExponential(3)} kg</p>
+          <p>Rest Energy (E₀): ${restEnergy.toExponential(3)} J</p>
+          <p>Total Energy (E): ${totalEnergy.toExponential(3)} J</p>
+          <p>Kinetic Energy (K): ${kineticEnergy.toExponential(3)} J</p>
+          <p>Velocity (v): ${velocity.toFixed(2)} m/s (${(velocity/c).toFixed(6)}c)</p>
+          <p>Lorentz Factor (γ): ${gamma.toFixed(6)}</p>
+          <p>Formulas: $E = \\gamma mc^2$, $K = E - E_0$</p>
+        `;
+        MathJax.typesetPromise();
+      }
+    </script>
   </body>
 </html>

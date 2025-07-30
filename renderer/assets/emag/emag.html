@@ -8,6 +8,16 @@
       rel="stylesheet"
     />
     <link rel="stylesheet" href="../css/index.css" />
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>
+      window.MathJax = {
+        tex: {
+          inlineMath: [['$', '$'], ['\\(', '\\)']],
+          displayMath: [['$$', '$$'], ['\\[', '\\]']]
+        }
+      };
+    </script>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Nabla</title>
@@ -32,5 +42,289 @@
       </nav>
       <script src="../../../src/js/window.js" defer type="module"></script>
     </div>
+
+    <div class="topic-header">
+      <h1>Electromagnetics</h1>
+      <p>Choose a calculator below to explore electromagnetic phenomena</p>
+    </div>
+
+    <div class="calculator-selection">
+      <button class="calculator-btn" onclick="showCalculator('coulomb-law')">Coulomb's Law</button>
+      <button class="calculator-btn" onclick="showCalculator('electric-field')">Electric Field</button>
+      <button class="calculator-btn" onclick="showCalculator('magnetic-force')">Magnetic Force</button>
+    </div>
+
+    <!-- Coulomb's Law Calculator -->
+    <div class="calculator-container" id="coulomb-law-calc" style="display: none;">
+      <h2>Coulomb's Law Calculator</h2>
+      <div class="calculator-form">
+        <div class="input-group">
+          <label for="charge1">Charge 1 (q₁) [C]:</label>
+          <input type="number" id="charge1" placeholder="Enter first charge" step="any">
+        </div>
+        <div class="input-group">
+          <label for="charge2">Charge 2 (q₂) [C]:</label>
+          <input type="number" id="charge2" placeholder="Enter second charge" step="any">
+        </div>
+        <div class="input-group">
+          <label for="distance">Distance (r) [m]:</label>
+          <input type="number" id="distance" placeholder="Enter distance" step="any">
+        </div>
+        <div class="input-group">
+          <label for="force">Force (F) [N]:</label>
+          <input type="number" id="force" placeholder="Enter force" step="any">
+        </div>
+        <p><em>Leave one field empty to solve for it</em></p>
+        <button onclick="calculateCoulomb()">Calculate</button>
+        <div class="result" id="coulomb-result"></div>
+      </div>
+    </div>
+
+    <!-- Electric Field Calculator -->
+    <div class="calculator-container" id="electric-field-calc" style="display: none;">
+      <h2>Electric Field Calculator</h2>
+      <div class="calculator-form">
+        <div class="input-group">
+          <label for="source-charge">Source Charge (Q) [C]:</label>
+          <input type="number" id="source-charge" placeholder="Enter source charge" step="any">
+        </div>
+        <div class="input-group">
+          <label for="field-distance">Distance (r) [m]:</label>
+          <input type="number" id="field-distance" placeholder="Enter distance from charge" step="any">
+        </div>
+        <div class="input-group">
+          <label for="electric-field">Electric Field (E) [N/C]:</label>
+          <input type="number" id="electric-field" placeholder="Enter electric field" step="any">
+        </div>
+        <div class="input-group">
+          <label for="test-charge">Test Charge (q) [C] (optional):</label>
+          <input type="number" id="test-charge" placeholder="Enter test charge for force calculation" step="any">
+        </div>
+        <p><em>Leave one of the first three fields empty to solve for it</em></p>
+        <button onclick="calculateElectricField()">Calculate</button>
+        <div class="result" id="electric-field-result"></div>
+      </div>
+    </div>
+
+    <!-- Magnetic Force Calculator -->
+    <div class="calculator-container" id="magnetic-force-calc" style="display: none;">
+      <h2>Magnetic Force on Moving Charge</h2>
+      <div class="calculator-form">
+        <div class="input-group">
+          <label for="moving-charge">Charge (q) [C]:</label>
+          <input type="number" id="moving-charge" placeholder="Enter charge" step="any">
+        </div>
+        <div class="input-group">
+          <label for="charge-velocity">Velocity (v) [m/s]:</label>
+          <input type="number" id="charge-velocity" placeholder="Enter velocity" step="any">
+        </div>
+        <div class="input-group">
+          <label for="magnetic-field">Magnetic Field (B) [T]:</label>
+          <input type="number" id="magnetic-field" placeholder="Enter magnetic field strength" step="any">
+        </div>
+        <div class="input-group">
+          <label for="field-angle">Angle between v and B [degrees]:</label>
+          <input type="number" id="field-angle" placeholder="Enter angle (default: 90°)" step="any" value="90">
+        </div>
+        <button onclick="calculateMagneticForce()">Calculate</button>
+        <div class="result" id="magnetic-force-result"></div>
+      </div>
+    </div>
+
+    <script>
+      function showCalculator(calcType) {
+        // Hide all calculators
+        document.querySelectorAll('.calculator-container').forEach(calc => {
+          calc.style.display = 'none';
+        });
+        
+        // Show selected calculator
+        document.getElementById(calcType + '-calc').style.display = 'block';
+        
+        // Update button styles
+        document.querySelectorAll('.calculator-btn').forEach(btn => {
+          btn.classList.remove('active');
+        });
+        event.target.classList.add('active');
+      }
+
+      function calculateCoulomb() {
+        const q1 = parseFloat(document.getElementById('charge1').value) || null;
+        const q2 = parseFloat(document.getElementById('charge2').value) || null;
+        const r = parseFloat(document.getElementById('distance').value) || null;
+        const F = parseFloat(document.getElementById('force').value) || null;
+        
+        // Count non-null values
+        const nonNullCount = [q1, q2, r, F].filter(val => val !== null).length;
+        
+        if (nonNullCount < 3) {
+          document.getElementById('coulomb-result').innerHTML = 'Please enter at least 3 values to solve for the fourth.';
+          return;
+        }
+        
+        if (nonNullCount === 4) {
+          document.getElementById('coulomb-result').innerHTML = 'Please leave one field empty to solve for it.';
+          return;
+        }
+        
+        const k = 8.99e9; // Coulomb's constant in N⋅m²/C²
+        let charge1 = q1, charge2 = q2, distance = r, force = F;
+        let solvedFor = '';
+        
+        // Case 1: Solve for force (F)
+        if (F === null && q1 !== null && q2 !== null && r !== null) {
+          if (r <= 0) {
+            document.getElementById('coulomb-result').innerHTML = 'Distance must be positive!';
+            return;
+          }
+          force = k * Math.abs(q1 * q2) / (r * r);
+          solvedFor = 'Force';
+        }
+        // Case 2: Solve for distance (r)
+        else if (r === null && q1 !== null && q2 !== null && F !== null) {
+          if (F <= 0) {
+            document.getElementById('coulomb-result').innerHTML = 'Force must be positive!';
+            return;
+          }
+          distance = Math.sqrt(k * Math.abs(q1 * q2) / F);
+          solvedFor = 'Distance';
+        }
+        // Case 3: Solve for charge1 (q₁)
+        else if (q1 === null && q2 !== null && r !== null && F !== null) {
+          if (r <= 0 || F <= 0) {
+            document.getElementById('coulomb-result').innerHTML = 'Distance and force must be positive!';
+            return;
+          }
+          const chargeProduct = F * r * r / k;
+          charge1 = chargeProduct / Math.abs(q2) * Math.sign(q2); // Preserve sign relationship
+          solvedFor = 'Charge 1';
+        }
+        // Case 4: Solve for charge2 (q₂)
+        else if (q2 === null && q1 !== null && r !== null && F !== null) {
+          if (r <= 0 || F <= 0) {
+            document.getElementById('coulomb-result').innerHTML = 'Distance and force must be positive!';
+            return;
+          }
+          const chargeProduct = F * r * r / k;
+          charge2 = chargeProduct / Math.abs(q1) * Math.sign(q1); // Preserve sign relationship
+          solvedFor = 'Charge 2';
+        }
+        
+        const forceType = (charge1 * charge2 > 0) ? 'repulsive' : 'attractive';
+        const potential = k * charge1 / distance; // Electric potential at q₂ due to q₁
+        
+        document.getElementById('coulomb-result').innerHTML = `
+          <h3>Results (Solved for ${solvedFor}):</h3>
+          <p>Charge 1 (q₁): ${charge1.toExponential(3)} C</p>
+          <p>Charge 2 (q₂): ${charge2.toExponential(3)} C</p>
+          <p>Distance (r): ${distance.toFixed(6)} m</p>
+          <p>Electric Force: ${Math.abs(force).toExponential(3)} N</p>
+          <p>Force Type: ${forceType}</p>
+          <p>Electric Potential (at q₂): ${potential.toExponential(3)} V</p>
+          <p>Formula used: $F = k\\frac{|q_1 q_2|}{r^2}$</p>
+          <p>where $k = 8.99 \\times 10^9$ N⋅m²/C²</p>
+        `;
+        MathJax.typesetPromise();
+      }
+
+      function calculateElectricField() {
+        const Q = parseFloat(document.getElementById('source-charge').value) || null;
+        const r = parseFloat(document.getElementById('field-distance').value) || null;
+        const E = parseFloat(document.getElementById('electric-field').value) || null;
+        const q = parseFloat(document.getElementById('test-charge').value) || null;
+        
+        // Count non-null values for main parameters
+        const nonNullCount = [Q, r, E].filter(val => val !== null).length;
+        
+        if (nonNullCount < 2) {
+          document.getElementById('electric-field-result').innerHTML = 'Please enter at least 2 of the first 3 values to solve for the third.';
+          return;
+        }
+        
+        if (nonNullCount === 3) {
+          document.getElementById('electric-field-result').innerHTML = 'Please leave one of the first three fields empty to solve for it.';
+          return;
+        }
+        
+        const k = 8.99e9; // Coulomb's constant in N⋅m²/C²
+        let sourceCharge = Q, distance = r, electricField = E;
+        let solvedFor = '';
+        
+        // Case 1: Solve for electric field (E)
+        if (E === null && Q !== null && r !== null) {
+          if (r <= 0) {
+            document.getElementById('electric-field-result').innerHTML = 'Distance must be positive!';
+            return;
+          }
+          electricField = k * Math.abs(Q) / (r * r);
+          solvedFor = 'Electric Field';
+        }
+        // Case 2: Solve for source charge (Q)
+        else if (Q === null && E !== null && r !== null) {
+          if (r <= 0 || E <= 0) {
+            document.getElementById('electric-field-result').innerHTML = 'Distance and electric field must be positive!';
+            return;
+          }
+          sourceCharge = E * r * r / k; // Assuming positive charge
+          solvedFor = 'Source Charge';
+        }
+        // Case 3: Solve for distance (r)
+        else if (r === null && Q !== null && E !== null) {
+          if (E <= 0) {
+            document.getElementById('electric-field-result').innerHTML = 'Electric field must be positive!';
+            return;
+          }
+          distance = Math.sqrt(k * Math.abs(Q) / E);
+          solvedFor = 'Distance';
+        }
+        
+        const potential = k * sourceCharge / distance; // Electric potential
+        
+        let result = `
+          <h3>Results (Solved for ${solvedFor}):</h3>
+          <p>Source Charge (Q): ${sourceCharge.toExponential(3)} C</p>
+          <p>Distance (r): ${distance.toFixed(6)} m</p>
+          <p>Electric Field (E): ${electricField.toExponential(3)} N/C</p>
+          <p>Electric Potential (V): ${potential.toExponential(3)} V</p>
+          <p>Direction: ${sourceCharge > 0 ? 'Away from' : 'Toward'} the source charge</p>
+          <p>Formula used: $E = k\\frac{|Q|}{r^2}$</p>
+        `;
+        
+        if (q !== null) {
+          const force = q * electricField;
+          const potentialEnergy = q * potential;
+          result += `<p>Force on test charge: ${force.toExponential(3)} N</p>`;
+          result += `<p>Potential Energy of test charge: ${potentialEnergy.toExponential(3)} J</p>`;
+          result += `<p>Additional formulas: $\\vec{F} = q\\vec{E}$, $U = qV$</p>`;
+        }
+        
+        document.getElementById('electric-field-result').innerHTML = result;
+        MathJax.typesetPromise();
+      }
+
+      function calculateMagneticForce() {
+        const q = parseFloat(document.getElementById('moving-charge').value);
+        const v = parseFloat(document.getElementById('charge-velocity').value);
+        const B = parseFloat(document.getElementById('magnetic-field').value);
+        const angle = parseFloat(document.getElementById('field-angle').value) || 90;
+        
+        if (isNaN(q) || isNaN(v) || isNaN(B)) {
+          document.getElementById('magnetic-force-result').innerHTML = 'Please enter valid values for charge, velocity, and magnetic field.';
+          return;
+        }
+        
+        const angleRad = angle * Math.PI / 180;
+        const force = Math.abs(q) * v * B * Math.sin(angleRad);
+        
+        document.getElementById('magnetic-force-result').innerHTML = `
+          <h3>Results:</h3>
+          <p>Magnetic Force: ${force.toExponential(3)} N</p>
+          <p>Angle: ${angle}°</p>
+          <p>Formula used: $\\vec{F} = |q|\\vec{v} \\times \\vec{B}$, $|\\vec{F}| = |q|vB\\sin\\theta$</p>
+          <p>Direction: Perpendicular to both $\\vec{v}$ and $\\vec{B}$ (right-hand rule)</p>
+        `;
+        MathJax.typesetPromise();
+      }
+    </script>
   </body>
 </html>

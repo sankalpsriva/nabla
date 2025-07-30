@@ -8,6 +8,16 @@
       rel="stylesheet"
     />
     <link rel="stylesheet" href="../css/index.css" />
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>
+      window.MathJax = {
+        tex: {
+          inlineMath: [['$', '$'], ['\\(', '\\)']],
+          displayMath: [['$$', '$$'], ['\\[', '\\]']]
+        }
+      };
+    </script>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Nabla</title>
@@ -32,5 +42,238 @@
       </nav>
       <script src="../../../src/js/window.js" defer type="module"></script>
     </div>
+
+    <div class="topic-header">
+      <h1>Vector Calculus</h1>
+      <p>Choose a calculator below to explore vector operations</p>
+    </div>
+
+    <div class="calculator-selection">
+      <button class="calculator-btn" onclick="showCalculator('vector-operations')">Vector Operations</button>
+      <button class="calculator-btn" onclick="showCalculator('gradient')">Gradient</button>
+      <button class="calculator-btn" onclick="showCalculator('divergence')">Divergence</button>
+    </div>
+
+    <!-- Vector Operations Calculator -->
+    <div class="calculator-container" id="vector-operations-calc" style="display: none;">
+      <h2>Vector Operations Calculator</h2>
+      <div class="calculator-form">
+        <h3>Vector A:</h3>
+        <div class="input-group">
+          <label for="vector-a-x">x-component:</label>
+          <input type="number" id="vector-a-x" placeholder="Enter x component" step="any">
+        </div>
+        <div class="input-group">
+          <label for="vector-a-y">y-component:</label>
+          <input type="number" id="vector-a-y" placeholder="Enter y component" step="any">
+        </div>
+        <div class="input-group">
+          <label for="vector-a-z">z-component:</label>
+          <input type="number" id="vector-a-z" placeholder="Enter z component" step="any">
+        </div>
+        
+        <h3>Vector B:</h3>
+        <div class="input-group">
+          <label for="vector-b-x">x-component:</label>
+          <input type="number" id="vector-b-x" placeholder="Enter x component" step="any">
+        </div>
+        <div class="input-group">
+          <label for="vector-b-y">y-component:</label>
+          <input type="number" id="vector-b-y" placeholder="Enter y component" step="any">
+        </div>
+        <div class="input-group">
+          <label for="vector-b-z">z-component:</label>
+          <input type="number" id="vector-b-z" placeholder="Enter z component" step="any">
+        </div>
+        
+        <button onclick="calculateVector()">Calculate</button>
+        <div class="result" id="vector-result"></div>
+      </div>
+    </div>
+
+    <!-- Gradient Calculator -->
+    <div class="calculator-container" id="gradient-calc" style="display: none;">
+      <h2>Gradient Calculator (Simple)</h2>
+      <div class="calculator-form">
+        <div class="input-group">
+          <label for="function-type">Function Type:</label>
+          <select id="function-type">
+            <option value="quadratic">f(x,y) = ax² + by² + cxy + dx + ey + f</option>
+            <option value="exponential">f(x,y) = ae^(bx + cy)</option>
+          </select>
+        </div>
+        <div id="quadratic-inputs">
+          <div class="input-group">
+            <label for="coeff-a">Coefficient a:</label>
+            <input type="number" id="coeff-a" placeholder="Enter coefficient a" step="any" value="1">
+          </div>
+          <div class="input-group">
+            <label for="coeff-b">Coefficient b:</label>
+            <input type="number" id="coeff-b" placeholder="Enter coefficient b" step="any" value="1">
+          </div>
+          <div class="input-group">
+            <label for="coeff-c">Coefficient c:</label>
+            <input type="number" id="coeff-c" placeholder="Enter coefficient c" step="any" value="0">
+          </div>
+        </div>
+        <div class="input-group">
+          <label for="eval-x">Evaluate at x:</label>
+          <input type="number" id="eval-x" placeholder="Enter x value" step="any" value="1">
+        </div>
+        <div class="input-group">
+          <label for="eval-y">Evaluate at y:</label>
+          <input type="number" id="eval-y" placeholder="Enter y value" step="any" value="1">
+        </div>
+        <button onclick="calculateGradient()">Calculate</button>
+        <div class="result" id="gradient-result"></div>
+      </div>
+    </div>
+
+    <!-- Divergence Calculator -->
+    <div class="calculator-container" id="divergence-calc" style="display: none;">
+      <h2>Divergence Calculator</h2>
+      <div class="calculator-form">
+        <h3>Vector Field F = (P, Q, R)</h3>
+        <div class="input-group">
+          <label for="field-p">P(x,y,z) coefficients [x², y², z², xy, xz, yz, x, y, z, constant]:</label>
+          <input type="text" id="field-p" placeholder="e.g., 1,0,0,0,0,0,2,0,0,3 for x² + 2x + 3">
+        </div>
+        <div class="input-group">
+          <label for="field-q">Q(x,y,z) coefficients:</label>
+          <input type="text" id="field-q" placeholder="Enter coefficients separated by commas">
+        </div>
+        <div class="input-group">
+          <label for="field-r">R(x,y,z) coefficients:</label>
+          <input type="text" id="field-r" placeholder="Enter coefficients separated by commas">
+        </div>
+        <div class="input-group">
+          <label for="div-eval-x">Evaluate at x:</label>
+          <input type="number" id="div-eval-x" placeholder="Enter x value" step="any" value="1">
+        </div>
+        <div class="input-group">
+          <label for="div-eval-y">Evaluate at y:</label>
+          <input type="number" id="div-eval-y" placeholder="Enter y value" step="any" value="1">
+        </div>
+        <div class="input-group">
+          <label for="div-eval-z">Evaluate at z:</label>
+          <input type="number" id="div-eval-z" placeholder="Enter z value" step="any" value="1">
+        </div>
+        <button onclick="calculateDivergence()">Calculate</button>
+        <div class="result" id="divergence-result"></div>
+      </div>
+    </div>
+
+    <script>
+      function showCalculator(calcType) {
+        // Hide all calculators
+        document.querySelectorAll('.calculator-container').forEach(calc => {
+          calc.style.display = 'none';
+        });
+        
+        // Show selected calculator
+        document.getElementById(calcType + '-calc').style.display = 'block';
+        
+        // Update button styles
+        document.querySelectorAll('.calculator-btn').forEach(btn => {
+          btn.classList.remove('active');
+        });
+        event.target.classList.add('active');
+      }
+
+      function calculateVector() {
+        const ax = parseFloat(document.getElementById('vector-a-x').value) || 0;
+        const ay = parseFloat(document.getElementById('vector-a-y').value) || 0;
+        const az = parseFloat(document.getElementById('vector-a-z').value) || 0;
+        
+        const bx = parseFloat(document.getElementById('vector-b-x').value) || 0;
+        const by = parseFloat(document.getElementById('vector-b-y').value) || 0;
+        const bz = parseFloat(document.getElementById('vector-b-z').value) || 0;
+        
+        const magnitudeA = Math.sqrt(ax*ax + ay*ay + az*az);
+        const magnitudeB = Math.sqrt(bx*bx + by*by + bz*bz);
+        const dotProduct = ax*bx + ay*by + az*bz;
+        
+        // Cross product
+        const crossX = ay*bz - az*by;
+        const crossY = az*bx - ax*bz;
+        const crossZ = ax*by - ay*bx;
+        const crossMagnitude = Math.sqrt(crossX*crossX + crossY*crossY + crossZ*crossZ);
+        
+        let angle = '';
+        if (magnitudeA > 0 && magnitudeB > 0) {
+          const cosAngle = dotProduct / (magnitudeA * magnitudeB);
+          angle = Math.acos(Math.max(-1, Math.min(1, cosAngle))) * (180 / Math.PI);
+        }
+        
+        document.getElementById('vector-result').innerHTML = `
+          <h3>Results:</h3>
+          <p>Magnitude of A: ${magnitudeA.toFixed(3)}</p>
+          <p>Magnitude of B: ${magnitudeB.toFixed(3)}</p>
+          <p>Dot Product ($\\vec{A} \\cdot \\vec{B}$): ${dotProduct.toFixed(3)}</p>
+          <p>Cross Product ($\\vec{A} \\times \\vec{B}$): (${crossX.toFixed(3)}, ${crossY.toFixed(3)}, ${crossZ.toFixed(3)})</p>
+          <p>Cross Product Magnitude: ${crossMagnitude.toFixed(3)}</p>
+          ${angle !== '' ? `<p>Angle between vectors: ${angle.toFixed(2)}°</p>` : ''}
+          <p>Formulas: $|\\vec{A}| = \\sqrt{a_x^2 + a_y^2 + a_z^2}$, $\\vec{A} \\cdot \\vec{B} = a_x b_x + a_y b_y + a_z b_z$</p>
+        `;
+        MathJax.typesetPromise();
+      }
+
+      function calculateGradient() {
+        const a = parseFloat(document.getElementById('coeff-a').value) || 1;
+        const b = parseFloat(document.getElementById('coeff-b').value) || 1;
+        const c = parseFloat(document.getElementById('coeff-c').value) || 0;
+        const x = parseFloat(document.getElementById('eval-x').value) || 1;
+        const y = parseFloat(document.getElementById('eval-y').value) || 1;
+        
+        // For f(x,y) = ax² + by² + cxy
+        // ∇f = (∂f/∂x, ∂f/∂y) = (2ax + cy, 2by + cx)
+        const gradX = 2*a*x + c*y;
+        const gradY = 2*b*y + c*x;
+        const gradMagnitude = Math.sqrt(gradX*gradX + gradY*gradY);
+        
+        document.getElementById('gradient-result').innerHTML = `
+          <h3>Results:</h3>
+          <p>Function: $f(x,y) = ${a}x^2 + ${b}y^2 + ${c}xy$</p>
+          <p>Gradient at (${x}, ${y}): $(${gradX.toFixed(3)}, ${gradY.toFixed(3)})$</p>
+          <p>Gradient Magnitude: ${gradMagnitude.toFixed(3)}</p>
+          <p>Formula: $\\nabla f = \\left(\\frac{\\partial f}{\\partial x}, \\frac{\\partial f}{\\partial y}\\right)$</p>
+        `;
+        MathJax.typesetPromise();
+      }
+
+      function calculateDivergence() {
+        const pCoeffs = document.getElementById('field-p').value.split(',').map(x => parseFloat(x) || 0);
+        const qCoeffs = document.getElementById('field-q').value.split(',').map(x => parseFloat(x) || 0);
+        const rCoeffs = document.getElementById('field-r').value.split(',').map(x => parseFloat(x) || 0);
+        
+        const x = parseFloat(document.getElementById('div-eval-x').value) || 1;
+        const y = parseFloat(document.getElementById('div-eval-y').value) || 1;
+        const z = parseFloat(document.getElementById('div-eval-z').value) || 1;
+        
+        if (pCoeffs.length < 10 || qCoeffs.length < 10 || rCoeffs.length < 10) {
+          document.getElementById('divergence-result').innerHTML = 'Please enter 10 coefficients for each component.';
+          return;
+        }
+        
+        // ∂P/∂x = 2*coeff[0]*x + coeff[3]*y + coeff[4]*z + coeff[6]
+        const dPdx = 2*pCoeffs[0]*x + pCoeffs[3]*y + pCoeffs[4]*z + pCoeffs[6];
+        // ∂Q/∂y = 2*coeff[1]*y + coeff[3]*x + coeff[5]*z + coeff[7]
+        const dQdy = 2*qCoeffs[1]*y + qCoeffs[3]*x + qCoeffs[5]*z + qCoeffs[7];
+        // ∂R/∂z = 2*coeff[2]*z + coeff[4]*x + coeff[5]*y + coeff[8]
+        const dRdz = 2*rCoeffs[2]*z + rCoeffs[4]*x + rCoeffs[5]*y + rCoeffs[8];
+        
+        const divergence = dPdx + dQdy + dRdz;
+        
+        document.getElementById('divergence-result').innerHTML = `
+          <h3>Results:</h3>
+          <p>$\\frac{\\partial P}{\\partial x}$ at (${x}, ${y}, ${z}): ${dPdx.toFixed(3)}</p>
+          <p>$\\frac{\\partial Q}{\\partial y}$ at (${x}, ${y}, ${z}): ${dQdy.toFixed(3)}</p>
+          <p>$\\frac{\\partial R}{\\partial z}$ at (${x}, ${y}, ${z}): ${dRdz.toFixed(3)}</p>
+          <p>Divergence ($\\nabla \\cdot \\vec{F}$): ${divergence.toFixed(3)}</p>
+          <p>Formula: $\\nabla \\cdot \\vec{F} = \\frac{\\partial P}{\\partial x} + \\frac{\\partial Q}{\\partial y} + \\frac{\\partial R}{\\partial z}$</p>
+        `;
+        MathJax.typesetPromise();
+      }
+    </script>
   </body>
 </html>
